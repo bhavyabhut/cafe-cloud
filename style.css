@@ -90,13 +90,19 @@ form:after {
 
 button {
     border: 0;
-    background: #fff;
+    background:#eab0dc;
     border-radius: 10px;
+    color:black !important;
     padding: 13px;
     width: 14%;
     box-shadow: -1px 0px 1px rgba(0, 0, 0, 0.1);
     font-weight: bold;
     font-family: ubuntu;
     letter-spacing: 1px;
-    color: #999;
+    outline:none;
+    cursor: pointer;
+}
+
+button:hover{
+    opacity: 0.9;
 }
