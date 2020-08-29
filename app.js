@@ -5,7 +5,6 @@ const deleteData  = (e)=>{
     e.stopPropagation();
     let id = e.target.parentElement.getAttribute('data-id')
     db.collection('cafe-cloud').doc(id).delete();
-    e.target.parentElement.remove()
 }
 const renderCafe = (doc) => {
   const data = doc.data();
@@ -24,14 +23,16 @@ const renderCafe = (doc) => {
   cafeList.append(li);
 };
 
-db.collection("cafe-cloud")
-    .where('city','==','Rajkot')
-  .get()
-  .then((res) => {
-    res.docs.forEach((doc) => {
-      renderCafe(doc);
-    });
-  });
+// db.collection("cafe-cloud")
+//     .where('city','==','Rajkot')
+//   .get()
+//   .then((res) => {
+//     res.docs.forEach((doc) => {
+//       renderCafe(doc);
+//     });
+//   });
+
+
 const postData = (e) => {
   e.preventDefault();
   if (cafeForm.city.value.trim() === "" || cafeForm.cafe.value.trim() === "") {
@@ -44,7 +45,6 @@ const postData = (e) => {
       name: cafeForm.cafe.value,
     })
     .then((res) => {
-        alert('Congo!!! SusseccFull added')
       cafeForm.city.value = "";
       cafeForm.cafe.value = "";
     })
@@ -52,3 +52,19 @@ const postData = (e) => {
 };
 
 cafeForm.addEventListener("submit", postData);
+
+//real time update
+db.collection("cafe-cloud")
+    .orderBy('city')
+  .onSnapshot(snapshot=>{
+      let changes = snapshot.docChanges()
+      changes.forEach(change =>{
+          if(change.type === 'added'){
+              renderCafe(change.doc)
+          }
+          else if (change.type ==='removed' ){
+              let li = cafeList.querySelector(`[data-id=${change.doc.id}]`)
+                li.remove();
+          }
+      })
+  })
